@@ -21,7 +21,7 @@ public class PlayerSlideState : PlayerState
         Ray ray = new Ray(player.transform.position + Vector3.up * 0.4f, player.transform.forward);
 
         // If a solid object blocks the path 1.5 units ahead, stop instantly
-        if (Physics.Raycast(ray, 1.5f, LayerMask.GetMask("Solid")))
+        if (Physics.Raycast(ray, 0.5f, LayerMask.GetMask("Solid")))
         {
             player.CurrentSpeed = 0f;
         }
