@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void FaceDirection(float turnSpeed = 500f)
+    public void FaceDirection(float turnSpeed = 1000f)
     {
         if (LookDirection == Vector3.zero) return;
 
