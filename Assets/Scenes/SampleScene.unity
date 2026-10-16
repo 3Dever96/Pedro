@@ -9594,13 +9594,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelCreator
   breakable: {fileID: 9112201341037145897, guid: 734b0c3858e45fc4eb1f6482721a8633, type: 3}
   gridSize: {x: 19, y: 15}
-  cellData: []
   startingCells:
   - {x: 9, y: 6}
   - {x: 8, y: 7}
   - {x: 9, y: 7}
   - {x: 10, y: 7}
   - {x: 9, y: 8}
+  cellData: []
 --- !u!4 &649475712
 Transform:
   m_ObjectHideFlags: 0

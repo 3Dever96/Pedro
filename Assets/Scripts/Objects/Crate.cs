@@ -40,7 +40,7 @@ public class Crate : MonoBehaviour, IBreakable
         // If an item was successfully selected during initialization, manifest it in the game world
         if (contents != null)
         {
-            Instantiate(contents, transform.position, transform.rotation);
+            Instantiate(contents, transform.position + new Vector3(0.5f, 0f, 0.5f), transform.rotation);
         }
 
         // Disable the crate object, taking it out of physical play and hiding it from view
@@ -49,9 +49,6 @@ public class Crate : MonoBehaviour, IBreakable
 
     private void OnEnable()
     {
-        // --- DESIGN POOL ALERT ---
-        // TODO: Uncomment OnSpawn() if crates are being pooled and reused across levels, 
-        // ensuring fresh loot data rolls every single time the crate reappears.
-        // OnSpawn();
+        OnSpawn();
     }
 }
