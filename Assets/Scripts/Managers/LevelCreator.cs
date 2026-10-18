@@ -85,7 +85,7 @@ public class LevelCreator : MonoBehaviour
             {
                 // Instantiates the breakable prefab. 
                 // Adds a +0.5f positional offset to precisely center the object's origin over its 1x1 grid cell footprint.
-                Instantiate(breakable, new Vector3(kvp.Key.x + 0.5f, 0f, kvp.Key.y + 0.5f), Quaternion.identity);
+                Instantiate(breakable, new Vector3(kvp.Key.x + 0.5f, 0f, kvp.Key.y + 0.5f), Quaternion.identity, transform);
             }
         }
     }

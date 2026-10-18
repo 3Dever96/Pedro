@@ -19,7 +19,7 @@ public class Crate : MonoBehaviour, IBreakable
     public void OnSpawn()
     {
         // 50% probability check to determine if this crate holds items or is empty
-        bool hasContents = Random.value > 0.5f;
+        bool hasContents = Random.value > 0.4f;
 
         if (hasContents && possibleContents != null && possibleContents.Length > 0)
         {
