@@ -7,9 +7,13 @@ public class GameManager : MonoBehaviour
 
     public UnityEvent AddMaxTaco;
     public UnityEvent AddCurrentTaco;
+    public UnityEvent GoalAvailable;
+    public UnityEvent GoalReached;
 
     private int maxTaco;
     private int currentTaco;
+
+    public GameState state;
 
     private void Awake()
     {
@@ -36,5 +40,24 @@ public class GameManager : MonoBehaviour
     {
         currentTaco++;
         AddCurrentTaco?.Invoke();
+
+        if (currentTaco == maxTaco)
+        {
+            GoalAvailable?.Invoke();
+        }
     }
+
+    public void OnGoalReached()
+    {
+        state = GameState.Goal;
+        GoalReached?.Invoke();
+    }
+}
+
+public enum GameState
+{
+    Play,
+    Paused,
+    Goal,
+    GameOver
 }

@@ -10,6 +10,7 @@ public class LevelCreator : MonoBehaviour
     [Header("Generation Prefabs")]
     [Tooltip("The prefab instantiated for tiles that can be shattered by a player slide.")]
     [SerializeField] private GameObject breakable;
+    [SerializeField] private GameObject goal;
 
     [Header("Grid Configurations")]
     [Tooltip("The overall width (X) and length (Y) dimensions of the generated level maze.")]
@@ -88,6 +89,21 @@ public class LevelCreator : MonoBehaviour
                 Instantiate(breakable, new Vector3(kvp.Key.x + 0.5f, 0f, kvp.Key.y + 0.5f), Quaternion.identity, transform);
             }
         }
+    }
+
+    public void SpawnGoal()
+    {
+        goal.SetActive(true);
+    }
+
+    private void OnEnable()
+    {
+        GameManager.instance.GoalAvailable.AddListener(SpawnGoal);
+    }
+
+    private void OnDisable()
+    {
+        GameManager.instance.GoalAvailable.RemoveListener(SpawnGoal);
     }
 }
 
