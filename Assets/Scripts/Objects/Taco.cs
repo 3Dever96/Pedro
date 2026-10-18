@@ -33,6 +33,7 @@ public class Taco : MonoBehaviour, ICollectable
     public void OnCollect()
     {
         // TODO: Integrate score increments, sound fx triggers, or stat updates here!
+        GameManager.instance.OnTacoCollected();
 
         // Deactivate the object to safely remove it from the active game space
         gameObject.SetActive(false);

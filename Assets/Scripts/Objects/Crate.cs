@@ -28,6 +28,11 @@ public class Crate : MonoBehaviour, IBreakable
 
             // Assign the selected asset to be held as contents
             contents = possibleContents[index];
+
+            if (contents == possibleContents[0])
+            {
+                GameManager.instance.OnTacoSpawn();
+            }
         }
     }
 
@@ -37,10 +42,12 @@ public class Crate : MonoBehaviour, IBreakable
     /// </summary>
     public void OnBreak()
     {
+        Transform container = GameObject.Find("Collectables").transform;
+
         // If an item was successfully selected during initialization, manifest it in the game world
         if (contents != null)
         {
-            Instantiate(contents, transform.position + new Vector3(0.5f, 0f, 0.5f), transform.rotation);
+            Instantiate(contents, transform.position + new Vector3(0.5f, 0f, 0.5f), transform.rotation, container);
         }
 
         // Disable the crate object, taking it out of physical play and hiding it from view
