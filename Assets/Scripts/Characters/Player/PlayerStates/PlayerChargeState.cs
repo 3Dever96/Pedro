@@ -35,6 +35,7 @@ public class PlayerChargeState : PlayerState
         {
             canvas.SetActive(true);
             chargeMeter.transform.forward = Camera.main.transform.forward;
+            chargeMeter.value = 0f;
         }
     }
 
@@ -62,7 +63,6 @@ public class PlayerChargeState : PlayerState
             chargeMeter.value = currentCharge;
             fillImage.color = fillColor.Evaluate(currentCharge / maxCharge);
             chargeMeter.transform.forward = Camera.main.transform.forward; // Ensure UI faces camera consistently
-            chargeMeter.transform.position = player.transform.position + new Vector3(0f, 1f, -0.5f);
         }
     }
 

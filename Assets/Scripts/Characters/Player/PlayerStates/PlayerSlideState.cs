@@ -4,31 +4,53 @@ using UnityEngine;
 /// <summary>
 /// Dictates high-speed forward momentum subject to physical friction deceleration 
 /// or abrupt termination upon collision with solid terrain features.
+/// Handles dynamic object destruction when sliding into breakable obstacles.
 /// </summary>
 [System.Serializable]
 public class PlayerSlideState : PlayerState
 {
+    [Tooltip("The base rate at which slide velocity decays over time.")]
     [SerializeField] private float friction;
+
+    /// <summary> The actively calculated friction coefficient, which can dynamically increase upon impact. </summary>
+    private float currentFriction;
 
     public override void StartState(PlayerController player)
     {
-        // Slide values and directional vectors are derived dynamically from PlayerChargeState.ExitState
+        // Initialize the runtime friction value with the base configuration value
+        currentFriction = friction;
     }
 
     public override void UpdateState(PlayerController player)
     {
         // Construct a forward detection ray offset slightly upwards to miss the floor plane geometry
         Ray ray = new Ray(player.transform.position + Vector3.up * 0.4f, player.transform.forward);
+        RaycastHit hit;
 
-        // If a solid object blocks the path 1.5 units ahead, stop instantly
-        if (Physics.Raycast(ray, 0.5f, LayerMask.GetMask("Solid")))
+        // Perform a short-range raycast directly ahead to check for impending wall impacts or obstacles
+        if (Physics.Raycast(ray, out hit, 0.5f, LayerMask.GetMask("Solid")))
         {
-            player.CurrentSpeed = 0f;
+            // Check if the collided solid object implements the breakable behavior interface
+            IBreakable breakable = hit.collider.GetComponent<IBreakable>();
+
+            if (breakable != null)
+            {
+                // Trigger the destruction/interaction routine on the target entity
+                breakable.OnBreak();
+
+                // Add a permanent friction penalty for this slide to simulate losing momentum from the smash
+                currentFriction += 1.5f;
+            }
+            else
+            {
+                // Unbreakable obstacle encountered: Bring the sliding velocity to a dead stop immediately
+                player.CurrentSpeed = 0f;
+            }
         }
         else
         {
-            // Linearly bleed away horizontal velocity over time using the friction parameter
-            player.CurrentSpeed = Mathf.Clamp(player.CurrentSpeed - friction * Time.deltaTime, 0f, 10f);
+            // Smoothly drain away forward velocity over time using the actively scaling friction metric
+            player.CurrentSpeed = Mathf.Clamp(player.CurrentSpeed - currentFriction * Time.deltaTime, 0f, 10f);
         }
     }
 
