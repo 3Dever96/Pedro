@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// A concrete implementation of a breakable obstacle (a crate).
-/// When smashed by the player, it randomly determines whether to spawn loot/content from an array of possibilities.
+/// Manages procedural loot generation and records objective additions to the central manager.
 /// </summary>
 public class Crate : MonoBehaviour, IBreakable
 {
@@ -14,21 +14,21 @@ public class Crate : MonoBehaviour, IBreakable
     private GameObject contents;
 
     /// <summary>
-    /// Evaluates random item generation conditions. Has a 50% chance to assign a random drop asset from the configuration library.
+    /// Evaluates random item generation conditions. Automatically hooks up metric registrations 
+    /// if an objective pickup (Taco) is rolled inside slot index 0.
     /// </summary>
     public void OnSpawn()
     {
-        // 50% probability check to determine if this crate holds items or is empty
+        // 60% probability check to determine if this crate holds items or is empty (1.0f - 0.4f)
         bool hasContents = Random.value > 0.4f;
 
         if (hasContents && possibleContents != null && possibleContents.Length > 0)
         {
             // Pick a completely random index within the bounds of the drop table array
             int index = Random.Range(0, possibleContents.Length);
-
-            // Assign the selected asset to be held as contents
             contents = possibleContents[index];
 
+            // CRITICAL DESIGN ASSUMPTION: Index 0 must ALWAYS represent your primary Taco prefab!
             if (contents == possibleContents[0])
             {
                 GameManager.instance.OnTacoSpawn();
@@ -37,16 +37,18 @@ public class Crate : MonoBehaviour, IBreakable
     }
 
     /// <summary>
-    /// Interface method implementation from IBreakable. Called instantly when a sliding player collides with this crate.
-    /// Spawns the held item drop and deactivates the crate object.
+    /// Interface method implementation from IBreakable. Spawns items safely centered 
+    /// on the grid path and automatically places them under a dedicated organization transform container.
     /// </summary>
     public void OnBreak()
     {
+        // Locate the target parent layout node to keep the hierarchy scene clean at runtime
         Transform container = GameObject.Find("Collectables").transform;
 
         // If an item was successfully selected during initialization, manifest it in the game world
         if (contents != null)
         {
+            // Center the pickup footprint by adding a +0.5f offset, keeping layout positions structurally uniform
             Instantiate(contents, transform.position + new Vector3(0.5f, 0f, 0.5f), transform.rotation, container);
         }
 
@@ -56,6 +58,7 @@ public class Crate : MonoBehaviour, IBreakable
 
     private void OnEnable()
     {
+        // Re-evaluate contents whenever enabled (supports layout generation pools)
         OnSpawn();
     }
 }
